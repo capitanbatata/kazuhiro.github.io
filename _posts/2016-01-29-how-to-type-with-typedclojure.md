@@ -99,7 +99,7 @@ def getCustomName(custom: Custom[String]): String = {
 
 Clojure
 {% highlight clojure %}
-(t/ann-record [[type :variance :covariant]]
+(t/ann-record [[type :variance :invariant]]
               Custom
               [name :- type])
 (defrecord Custom [name])
@@ -107,3 +107,9 @@ Clojure
 (t/ann get-custom-name [(Custom String) -> String])
 (defn get-custom-name [custom] (:name custom))
 {% endhighlight %}
+
+---
+
+**Errata:**
+
+* (2016-01-31) changed `:covariant` to `:invariant` in last example
