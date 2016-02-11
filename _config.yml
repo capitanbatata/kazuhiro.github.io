@@ -9,7 +9,7 @@
 title: kazuhiro.github.io
 email: jarzemski.piotr@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
-  It is all about how to mine the best quality code. No matter, if it is Scala, Clojue, Java, Go, or something else.
+  It is all about how to mine the best quality code. No matter, if it is Scala, Clojure, Java, Go, or something else.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://kazuhiro.github.com" # the base hostname & protocol for your site
 twitter_username: kh1ramatsu
@@ -18,3 +18,6 @@ linkedin_username: piotrjarzemski
 
 # Build settings
 markdown: kramdown
+
+gems:
+  - jekyll-sitemap
