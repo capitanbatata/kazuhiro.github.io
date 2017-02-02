@@ -12,15 +12,14 @@ git clone https://github.com/openzipkin/docker-zipkin
 cd docker-zipkin
 docker-compose up
 {% endhighlight %}
-This will setup four containers - [Cassandra](http://cassandra.apache.org/) storage, data collector, query engine, and web interface.
+This will setup three containers - [Mysql](https://www.mysql.com/) storage, zipkin dependencies, and zipkin itself.
 {% highlight bash %}
 docker ps --format "{% raw %}{{.Image}}{% endraw %}"
 
 # output
-openzipkin/zipkin-web:1.30.2
-openzipkin/zipkin-query:1.30.2
-openzipkin/zipkin-collector:1.30.2
-openzipkin/zipkin-cassandra:1.30.2
+openzipkin/zipkin-dependencies
+openzipkin/zipkin
+openzipkin/zipkin-mysql
 {% endhighlight %}
 
 Now it is time to run [Finatra](https://twitter.github.io/finatra/) demo application and connect it to [Zipkin](http://zipkin.io/):
@@ -29,22 +28,22 @@ git clone https://github.com/twitter/finatra.git
 cd finatra
 sbt "helloWorld/runMain com.twitter.hello.HelloWorldServerMain
 -admin.port=:8880
--com.twitter.finagle.zipkin.host=localhost:9410
--com.twitter.finagle.tracing.debugTrace=true
--com.twitter.finagle.zipkin.initialSampleRate=1.0
--tracingEnabled=true"
+-Dzipkin.host=localhost:9410
+-Dtracing.debugTrace=true
+-Dzipkin.initialSampleRate=1.0
+-DtracingEnabled=true"
 {% endhighlight %}
 Why there is need for so many flags? Well, let's have a closer look at them:
 
 * **admin.port** to omit collision with [Zipkin](http://zipkin.io/)'s web interface admin panel
-* **com.twitter.finagle.zipkin.host** points to our [Zipkin](http://zipkin.io/) collector
-* **com.twitter.finagle.tracing.debugTrace** to see if traces are sent to collector
-* **com.twitter.finagle.tracing.initialSampleRate** to trace all requests (otherwise only n-th lucky request will go to collector)
+* **zipkin.host** points to our [Zipkin](http://zipkin.io/) collector
+* **tracing.debugTrace** to see if traces are sent to collector
+* **tracing.initialSampleRate** to trace all requests (otherwise only n-th lucky request will go to collector)
 * **tracingEnabled** to enable tracing
 
 {% highlight bash %}
-[info] Running com.twitter.hello.HelloWorldServerMain -admin.port=:8880 -com.twitter.finagle.zipkin.host=localhost:9410 -com.twitter.finagle.tracing.debugTrace=true -com.twitter.finagle.zipkin.init
-ialSampleRate=1.0 -tracingEnabled=true
+[info] Running com.twitter.hello.HelloWorldServerMain -admin.port=:8880 -Dipkin.host=localhost:9410 -Dtracing.debugTrace=true -Dinit
+ialSampleRate=1.0 -DtracingEnabled=true
 Feb 17, 2016 4:12:10 PM com.twitter.finagle.http.HttpMuxer$$anonfun$4 apply
 INFO: HttpMuxer[/admin/metrics.json] = com.twitter.finagle.stats.MetricsExporter(<function1>)
 Feb 17, 2016 4:12:10 PM com.twitter.finagle.http.HttpMuxer$$anonfun$4 apply
